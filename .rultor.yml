@@ -26,13 +26,6 @@ merge:
   commanders:
   - velo
   script: |-
-    sudo apt-get update -y
-    sudo apt-get install -y postgresql-9.3
-    sudo sh -c 'echo "host all all localhost trust" > /etc/postgresql/9.3/main/pg_hba.conf'
-    sudo sh -c 'echo "local all all trust" >> /etc/postgresql/9.3/main/pg_hba.conf'
-    sudo service postgresql start
-    sleep 30
-    psql -c 'create database nativejson;' -U postgres
     mvn install -Pci -B --settings ../settings.xml
 
 env:
@@ -40,15 +33,8 @@ env:
 
 release:
   script: |-
-    sudo apt-get update -y
-    sudo apt-get install -y postgresql-9.3
-    sudo sh -c 'echo "host all all localhost trust" > /etc/postgresql/9.3/main/pg_hba.conf'
-    sudo sh -c 'echo "local all all trust" >> /etc/postgresql/9.3/main/pg_hba.conf'
-    sudo service postgresql start
-    sleep 30
-    psql -c 'create database nativejson;' -U postgres
     mvn versions:set "-DnewVersion=${tag}"
     git commit -am "${tag}"
-    mvn deploy -Pci -B -Prelease --settings ../settings.xml -Dgpg.homedir=..
+    mvn deploy -Pci -B -Prelease --settings ../settings.xml -Dgpg.homedir=.. -DskipTests=true
   commanders:
   - velo
